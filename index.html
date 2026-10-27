@@ -96,11 +96,10 @@
       border-radius: 4px;
       overflow: hidden;
     }
-    /* NEW PHOTO STYLING */
     .memory-item {
       position: absolute;
-      width: 60px; /* Slightly bigger for photos */
-      height: 60px; /* Slightly bigger for photos */
+      width: 65px;
+      height: 65px;
       background: #ff758c;
       border: 2px solid #fff;
       display: flex;
@@ -108,8 +107,8 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 3px 3px 0px #c9184a;
-      background-size: cover; /* Important for filling the box */
-      background-position: center; /* Important for center crop */
+      background-size: cover;
+      background-position: center;
     }
 
     /* Prize Screen */
@@ -217,16 +216,12 @@
     let score = 0;
     const targetScore = 10;
 
-    // --- STEP 4 ACTION: EDIT BELOW ---
-    // In your Notes app, copy the long strings from your photos.
-    // Replace the placeholders inside the quotes below with your Base64 codes.
-    // You can add more lines if you have more photos (make sure they end in a comma).
+    // --- TYPE YOUR EXACT PHOTO FILENAMES HERE ---
+    // Make sure they match the filenames of the photos you just uploaded!
     const photoArray = [
-      'fxn_2025-12-25_190704.862.jpeg',
-      'dfuns 2025-12-26 193510.784.jpeg',
       'IMG_9897.jpeg',
-      'IMG_2380.jpeg',
-      'IMG_7378.jpeg'
+      'fxn_2025-12-25_190704.862.jpeg'
+      // If you added more photos, just add their filenames here like: 'IMG_9898.jpeg',
     ];
     // --- STOP EDITING ---
 
@@ -247,13 +242,9 @@
       const item = document.createElement('div');
       item.classList.add('memory-item');
       
-      // Select a random photo
       const selectedPhoto = photoArray[Math.floor(Math.random() * photoArray.length)];
-      
-      // Set the photo as the background of the memory item
-      item.style.backgroundImage = `url(${selectedPhoto})`;
+      item.style.backgroundImage = `url('${selectedPhoto}')`;
 
-      // Positions
       const maxX = playArea.clientWidth - 70;
       const maxY = playArea.clientHeight - 70;
       const randomX = Math.max(10, Math.floor(Math.random() * maxX));
@@ -266,7 +257,6 @@
 
       playArea.appendChild(item);
 
-      // Disappear after 1.5 seconds if not clicked
       setTimeout(() => {
         if (item.parentNode === playArea) {
           playArea.removeChild(item);
