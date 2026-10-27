@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Happy Monthsary!</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffe6eb;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+      text-align: center;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+    header {
+      margin-top: 20px;
+    }
+    h1 {
+      color: #ff4d6d;
+      font-size: 24px;
+      margin: 0;
+    }
+    p {
+      color: #555;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    #score-board {
+      font-size: 18px;
+      font-weight: bold;
+      color: #c9184a;
+      margin-top: 10px;
+    }
+    #play-area {
+      position: relative;
+      width: 90vw;
+      height: 60vh;
+      background: #fff0f3;
+      border: 3px dashed #ffb3c1;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      font-size: 40px;
+      cursor: pointer;
+      animation: pop 0.3s ease-out;
+    }
+    #win-screen {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 80%;
+      max-width: 320px;
+      z-index: 10;
+    }
+    #win-screen h2 {
+      color: #ff4d6d;
+      margin-top: 0;
+    }
+    #win-screen p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #444;
+    }
+    .btn {
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 25px;
+      margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <header>
+      <h1>Catch My Hearts 💕</h1>
+      <p>Tap 10 hearts to unlock your message!</p>
+      <div id="score-board">Hearts Collected: <span id="score">0</span> / 10</div>
+    </header>
+
+    <div id="play-area"></div>
+  </div>
+
+  <div id="win-screen">
+    <h2>Happy Monthsary! 💖</h2>
+    <p id="custom-message">
+      You caught all my hearts! Thank you for being the sweetest, most amazing boyfriend ever. I love you so much! ✨
+    </p>
+    <button class="btn" onclick="restartGame()">Play Again</button>
+  </div>
+
+  <script>
+    let score = 0;
+    const targetScore = 10;
+    const playArea = document.getElementById('play-area');
+    const scoreDisplay = document.getElementById('score');
+    const winScreen = document.getElementById('win-screen');
+
+    function spawnHeart() {
+      if (score >= targetScore) return;
+
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '💖';
+
+      // Random position inside the play area
+      const maxX = playArea.clientWidth - 50;
+      const maxY = playArea.clientHeight - 50;
+
+      const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+
+      heart.style.left = randomX + 'px';
+      heart.style.top = randomY + 'px';
+
+      heart.addEventListener('touchstart', catchHeart);
+      heart.addEventListener('click', catchHeart);
+
+      playArea.appendChild(heart);
+
+      // Heart disappears after 1.5 seconds if not tapped
+      setTimeout(() => {
+        if (heart.parentNode === playArea) {
+          playArea.removeChild(heart);
+          spawnHeart();
+        }
+      }, 1500);
+    }
+
+    function catchHeart(e) {
+      e.preventDefault();
+      score++;
+      scoreDisplay.innerText = score;
+      this.parentNode.removeChild(this);
+
+      if (score >= targetScore) {
+        winScreen.style.display = 'block';
+      } else {
+        setTimeout(spawnHeart, 300);
+      }
+    }
+
+    function restartGame() {
+      score = 0;
+      scoreDisplay.innerText = score;
+      winScreen.style.display = 'none';
+      spawnHeart();
+    }
+
+    // Start game
+    spawnHeart();
+  </script>
+</body>
+</html>
