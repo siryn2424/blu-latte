@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Happy Monthsary!</title>
+  <title>For My Jheramey - 10th Monthsary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -13,170 +14,279 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #ffe6eb;
-      font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+      background-color: #1a1c23;
+      font-family: 'Press Start 2P', monospace;
       text-align: center;
       overflow: hidden;
       touch-action: manipulation;
+      color: #fff;
     }
-    #game-container {
+    #screen-container {
       width: 100vw;
       height: 100vh;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    /* Start Screen */
+    #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    h1 {
+      color: #ff758c;
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0;
+      text-shadow: 3px 3px #c9184a;
+    }
+    .subtitle {
+      color: #ffb3c1;
+      font-size: 9px;
+      line-height: 1.8;
+      max-width: 300px;
+      margin: 0;
+    }
+    .pixel-btn {
+      background-color: #ff4d6d;
+      color: white;
+      border: 4px solid #fff;
+      padding: 14px 20px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #c9184a;
+      transition: transform 0.1s;
+    }
+    .pixel-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #c9184a;
+    }
+
+    /* Game Screen */
+    #game-screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
       padding: 20px;
     }
     header {
-      margin-top: 20px;
-    }
-    h1 {
-      color: #ff4d6d;
-      font-size: 24px;
-      margin: 0;
-    }
-    p {
-      color: #555;
-      font-size: 14px;
-      margin-top: 5px;
+      margin-top: 10px;
     }
     #score-board {
-      font-size: 18px;
-      font-weight: bold;
-      color: #c9184a;
-      margin-top: 10px;
+      font-size: 10px;
+      color: #ffb3c1;
+      margin-top: 8px;
     }
     #play-area {
       position: relative;
       width: 90vw;
       height: 60vh;
-      background: #fff0f3;
-      border: 3px dashed #ffb3c1;
-      border-radius: 20px;
+      background: #282a36;
+      border: 4px solid #ff758c;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+      border-radius: 4px;
       overflow: hidden;
     }
-    .heart {
+    /* NEW PHOTO STYLING */
+    .memory-item {
       position: absolute;
-      font-size: 40px;
+      width: 60px; /* Slightly bigger for photos */
+      height: 60px; /* Slightly bigger for photos */
+      background: #ff758c;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      animation: pop 0.3s ease-out;
+      box-shadow: 3px 3px 0px #c9184a;
+      background-size: cover; /* Important for filling the box */
+      background-position: center; /* Important for center crop */
     }
-    #win-screen {
+
+    /* Prize Screen */
+    #prize-screen {
       display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      width: 80%;
-      max-width: 320px;
-      z-index: 10;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      width: 90%;
+      max-width: 400px;
     }
-    #win-screen h2 {
-      color: #ff4d6d;
-      margin-top: 0;
+    #prize-screen h2 {
+      font-size: 12px;
+      color: #ff758c;
+      line-height: 1.6;
     }
-    #win-screen p {
-      font-size: 16px;
-      line-height: 1.5;
+    #prize-screen p {
+      font-size: 9px;
+      color: #ffb3c1;
+    }
+    .gift-box {
+      font-size: 60px;
+      cursor: pointer;
+      animation: bounce 0.8s infinite alternate;
+      margin: 10px 0;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+
+    /* Letter Screen */
+    #letter-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 92vw;
+      max-height: 85vh;
+      background: #fff0f3;
       color: #444;
+      border: 4px solid #ff4d6d;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 6px 6px 0px #c9184a;
+      overflow-y: auto;
+      text-align: left;
     }
-    .btn {
-      background-color: #ff4d6d;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 25px;
-      margin-top: 15px;
-      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+    #letter-screen h3 {
+      color: #c9184a;
+      font-size: 11px;
+      text-align: center;
+      margin-top: 5px;
+      margin-bottom: 12px;
+    }
+    #letter-screen .letter-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7.5px;
+      line-height: 1.8;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
-  <div id="game-container">
-    <header>
-      <h1>Catch My Hearts 💕</h1>
-      <p>Tap 10 hearts to unlock your message!</p>
-      <div id="score-board">Hearts Collected: <span id="score">0</span> / 10</div>
-    </header>
+  <div id="screen-container">
+    <!-- 1. START SCREEN -->
+    <div id="start-screen">
+      <h1>Pixel Monthsary</h1>
+      <p class="subtitle">For My Jheramey<br><br>Catch 10 memories for our 10th Monthsary!</p>
+      <button class="pixel-btn" onclick="startGame()">START GAME</button>
+    </div>
 
-    <div id="play-area"></div>
-  </div>
+    <!-- 2. GAME SCREEN -->
+    <div id="game-screen">
+      <header>
+        <h1 style="font-size: 11px;">Catch Our Memories! 📸</h1>
+        <div id="score-board">Memories: <span id="score">0</span> / 10</div>
+      </header>
+      <div id="play-area"></div>
+    </div>
 
-  <div id="win-screen">
-    <h2>Happy Monthsary! 💖</h2>
-    <p id="custom-message">
-      You caught all my hearts! Thank you for being the sweetest, most amazing boyfriend ever. I love you so much! ✨
-    </p>
-    <button class="btn" onclick="restartGame()">Play Again</button>
+    <!-- 3. PRIZE SCREEN -->
+    <div id="prize-screen">
+      <h2>Congratulations, Bubba!<br>Here’s your prize!</h2>
+      <p>tap the box to open</p>
+      <div class="gift-box" onclick="openLetter()">🎁</div>
+    </div>
+
+    <!-- 4. LETTER SCREEN -->
+    <div id="letter-screen">
+      <h3>Happy 10th Monthsary, my love!</h3>
+      <div class="letter-text">
+        I am so proud of how far we’ve come together. At first, it seemed impossible but your love for me didn’t let us end up not being together and that strengthens me to try and follow what my heart’s always been shouting, which is you.<br><br>
+        Thank you for holding on to me through ups and downs from the very first start. Thank you for making me smile even from within and for making me understand what real love feels like.<br><br>
+        Nothing could ever explain how much I love you, baby. I hope this little game I made for you showed a bit of my love for you.<br><br>
+        <span style="color: #c9184a; font-weight: bold;">- forever yours, Siryn</span>
+      </div>
+      <button class="pixel-btn" style="margin: 15px auto 5px auto; font-size: 8px; padding: 10px;" onclick="location.reload()">PLAY AGAIN</button>
+    </div>
   </div>
 
   <script>
     let score = 0;
     const targetScore = 10;
-    const playArea = document.getElementById('play-area');
-    const scoreDisplay = document.getElementById('score');
-    const winScreen = document.getElementById('win-screen');
 
-    function spawnHeart() {
-      if (score >= targetScore) return;
+    // --- STEP 4 ACTION: EDIT BELOW ---
+    // In your Notes app, copy the long strings from your photos.
+    // Replace the placeholders inside the quotes below with your Base64 codes.
+    // You can add more lines if you have more photos (make sure they end in a comma).
+    const photoArray = [
+      'fxn_2025-12-25_190704.862.jpeg',
+      'dfuns 2025-12-26 193510.784.jpeg',
+      'IMG_9897.jpeg',
+      'IMG_2380.jpeg',
+      'IMG_7378.jpeg'
+    ];
+    // --- STOP EDITING ---
 
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerHTML = '💖';
+    function startGame() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'flex';
+      spawnMemory();
+    }
 
-      // Random position inside the play area
-      const maxX = playArea.clientWidth - 50;
-      const maxY = playArea.clientHeight - 50;
+    function spawnMemory() {
+      if (score >= targetScore) {
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('prize-screen').style.display = 'flex';
+        return;
+      }
 
+      const playArea = document.getElementById('play-area');
+      const item = document.createElement('div');
+      item.classList.add('memory-item');
+      
+      // Select a random photo
+      const selectedPhoto = photoArray[Math.floor(Math.random() * photoArray.length)];
+      
+      // Set the photo as the background of the memory item
+      item.style.backgroundImage = `url(${selectedPhoto})`;
+
+      // Positions
+      const maxX = playArea.clientWidth - 70;
+      const maxY = playArea.clientHeight - 70;
       const randomX = Math.max(10, Math.floor(Math.random() * maxX));
       const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+      item.style.left = randomX + 'px';
+      item.style.top = randomY + 'px';
 
-      heart.style.left = randomX + 'px';
-      heart.style.top = randomY + 'px';
+      item.addEventListener('touchstart', catchMemory);
+      item.addEventListener('click', catchMemory);
 
-      heart.addEventListener('touchstart', catchHeart);
-      heart.addEventListener('click', catchHeart);
+      playArea.appendChild(item);
 
-      playArea.appendChild(heart);
-
-      // Heart disappears after 1.5 seconds if not tapped
+      // Disappear after 1.5 seconds if not clicked
       setTimeout(() => {
-        if (heart.parentNode === playArea) {
-          playArea.removeChild(heart);
-          spawnHeart();
+        if (item.parentNode === playArea) {
+          playArea.removeChild(item);
+          spawnMemory();
         }
       }, 1500);
     }
 
-    function catchHeart(e) {
+    function catchMemory(e) {
       e.preventDefault();
       score++;
-      scoreDisplay.innerText = score;
+      document.getElementById('score').innerText = score;
       this.parentNode.removeChild(this);
-
-      if (score >= targetScore) {
-        winScreen.style.display = 'block';
-      } else {
-        setTimeout(spawnHeart, 300);
-      }
+      setTimeout(spawnMemory, 250);
     }
 
-    function restartGame() {
-      score = 0;
-      scoreDisplay.innerText = score;
-      winScreen.style.display = 'none';
-      spawnHeart();
+    function openLetter() {
+      document.getElementById('prize-screen').style.display = 'none';
+      document.getElementById('letter-screen').style.display = 'flex';
     }
-
-    // Start game
-    spawnHeart();
   </script>
 </body>
 </html>
