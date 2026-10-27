@@ -98,17 +98,30 @@
     }
     .memory-item {
       position: absolute;
-      width: 65px;
-      height: 65px;
+      width: 95px;  /* Made bigger */
+      height: 95px; /* Made bigger */
       background: #ff758c;
-      border: 2px solid #fff;
+      border: 3px solid #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 3px 3px 0px #c9184a;
+      box-shadow: 4px 4px 0px #c9184a;
       background-size: cover;
       background-position: center;
+      animation: spawnPop 0.2s ease-out;
+    }
+    @keyframes spawnPop {
+      0% { transform: scale(0.2); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    /* Popping animation when tapped */
+    .pop-animation {
+      animation: popOut 0.25s ease-out forwards;
+    }
+    @keyframes popOut {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.4); opacity: 0; }
     }
 
     /* Prize Screen */
@@ -122,7 +135,7 @@
       max-width: 400px;
     }
     #prize-screen h2 {
-      font-size: 12px;
+      font-size: 11px;
       color: #ff758c;
       line-height: 1.6;
     }
@@ -194,7 +207,7 @@
 
     <!-- 3. PRIZE SCREEN -->
     <div id="prize-screen">
-      <h2>Congratulations, Bubba!<br>Here’s your prize!</h2>
+      <h2>Congratulations, Bubba!<br>Unlock the letter na!</h2>
       <p>tap the box to open</p>
       <div class="gift-box" onclick="openLetter()">🎁</div>
     </div>
@@ -203,9 +216,9 @@
     <div id="letter-screen">
       <h3>Happy 10th Monthsary, my love!</h3>
       <div class="letter-text">
-        I’m so damn proud of how far we’ve come. Honestly, at first it felt impossible, but your love didn't let us give up. That gave me the courage to just listen to what my heart’s always been shouting, which is you.<br><br>
-        Thank you for holding on to me through every up and down from the very start. Thank you for making me smile even from the inside, and for showing me what real love actually feels like.<br><br>
-        Nothing can ever explain how much I love you, baby. I hope this little game I made for you showed you even just a bit of how much you mean to mean.<br><br>
+        I am so proud of how far we’ve come together. At first, it seemed impossible but your love for me didn’t let us end up not being together and that strengthens me to try and follow what my heart’s always been shouting, which is you.<br><br>
+        Thank you for holding on to me through ups and downs from the very first start. Thank you for making me smile even from within and for making me understand what real love feels like.<br><br>
+        Nothing could ever explain how much I love you, baby. I hope this little game I made for you showed a bit of my love for you.<br><br>
         <span style="color: #c9184a; font-weight: bold;">- forever yours, Siryn</span>
       </div>
       <button class="pixel-btn" style="margin: 15px auto 5px auto; font-size: 8px; padding: 10px;" onclick="location.reload()">PLAY AGAIN</button>
@@ -222,7 +235,7 @@
       'fxn_2025-12-25_190704.862.jpeg',
       'IMG_2380.jpeg',
       'IMG_7378.jpeg',
-      'dfuns_2025-12-26_193510.784.jpeg'
+      'dfuns 2025-12-26 193510.784.jpeg'
     ];
 
     function startGame() {
@@ -235,7 +248,6 @@
       if (photoArray.length <= 1) return encodeURI(photoArray[0] || '');
       
       let newIndex;
-      // Guarantee the next photo is different from the last one shown
       do {
         newIndex = Math.floor(Math.random() * photoArray.length);
       } while (newIndex === lastPhotoIndex);
@@ -258,8 +270,9 @@
       const photoUrl = getNextPhoto();
       item.style.backgroundImage = `url('${photoUrl}')`;
 
-      const maxX = playArea.clientWidth - 70;
-      const maxY = playArea.clientHeight - 70;
+      // Account for larger 95px size within boundaries
+      const maxX = playArea.clientWidth - 100;
+      const maxY = playArea.clientHeight - 100;
       const randomX = Math.max(10, Math.floor(Math.random() * maxX));
       const randomY = Math.max(10, Math.floor(Math.random() * maxY));
       item.style.left = randomX + 'px';
@@ -282,7 +295,16 @@
       e.preventDefault();
       score++;
       document.getElementById('score').innerText = score;
-      this.parentNode.removeChild(this);
+      
+      // Add satisfying pop-out animation before removing
+      this.classList.add('pop-animation');
+      const currentItem = this;
+      setTimeout(() => {
+        if (currentItem.parentNode) {
+          currentItem.parentNode.removeChild(currentItem);
+        }
+      }, 200);
+
       setTimeout(spawnMemory, 250);
     }
 
