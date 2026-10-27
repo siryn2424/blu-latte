@@ -24,7 +24,7 @@
     #screen-container {
       width: 100vw;
       height: 100vh;
-      height: 100svh; /* Dynamic mobile viewport fix */
+      height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -235,7 +235,6 @@
     let audioCtx = null;
     let bgmInterval = null;
 
-    // 8-bit tap sound effect
     function playPixelSound() {
       try {
         if (!audioCtx) {
@@ -263,11 +262,10 @@
       } catch (e) {}
     }
 
-    // Cute background chiptune melody loop playing throughout the whole experience
     function startBackgroundMusic() {
       if (bgmInterval) return;
       
-      const melody = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 587.33, 659.25]; // Soft uplifting loop
+      const melody = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 587.33, 659.25];
       let noteIndex = 0;
 
       bgmInterval = setInterval(() => {
@@ -282,10 +280,10 @@
           const osc = audioCtx.createOscillator();
           const gainNode = audioCtx.createGain();
 
-          osc.type = 'triangle'; // Soft retro chime sound
+          osc.type = 'triangle';
           osc.frequency.setValueAtTime(melody[noteIndex], audioCtx.currentTime);
 
-          gainNode.gain.setValueAtTime(0.025, audioCtx.currentTime); // Soft background volume
+          gainNode.gain.setValueAtTime(0.025, audioCtx.currentTime);
           gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
 
           osc.connect(gainNode);
@@ -296,10 +294,16 @@
 
           noteIndex = (noteIndex + 1) % melody.length;
         } catch (e) {}
-      }, 450); // Plays a sweet note every 450ms
+      }, 450);
     }
 
+    // --- ALL YOUR PHOTO FILENAMES ARE HERE ---
     const photoArray = [
+      'FullSizeRender.jpeg',
+      'IMG_0383.jpeg',
+      'IMG_0341.jpeg',
+      'IMG_7385.jpeg',
+      'IMG_7292.jpeg',
       'IMG_9897.jpeg',
       'fxn_2025-12-25_190704.862.jpeg',
       'IMG_2380.jpeg',
@@ -309,7 +313,7 @@
 
     function startGame() {
       playPixelSound();
-      startBackgroundMusic(); // Starts background music loop!
+      startBackgroundMusic();
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('game-screen').style.display = 'flex';
       spawnMemory();
