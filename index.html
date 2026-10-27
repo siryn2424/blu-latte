@@ -24,11 +24,12 @@
     #screen-container {
       width: 100vw;
       height: 100vh;
+      height: 100svh; /* Dynamic mobile viewport fix */
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 10px;
     }
     /* Start Screen */
     #start-screen {
@@ -36,18 +37,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 20px;
+      gap: 15px;
     }
     h1 {
       color: #ff758c;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.6;
       margin: 0;
       text-shadow: 3px 3px #c9184a;
     }
     .subtitle {
       color: #ffb3c1;
-      font-size: 9px;
+      font-size: 8.5px;
       line-height: 1.8;
       max-width: 300px;
       margin: 0;
@@ -56,9 +57,9 @@
       background-color: #ff4d6d;
       color: white;
       border: 4px solid #fff;
-      padding: 14px 20px;
+      padding: 12px 18px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
+      font-size: 10px;
       cursor: pointer;
       box-shadow: 4px 4px 0px #c9184a;
       transition: transform 0.1s;
@@ -73,33 +74,36 @@
       display: none;
       width: 100vw;
       height: 100vh;
+      height: 100svh;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
-      padding: 20px;
+      padding: 10px 10px 20px 10px;
+      gap: 8px;
     }
     header {
-      margin-top: 10px;
+      margin-top: 5px;
     }
     #score-board {
-      font-size: 10px;
+      font-size: 9px;
       color: #ffb3c1;
-      margin-top: 8px;
+      margin-top: 5px;
     }
     #play-area {
       position: relative;
-      width: 90vw;
-      height: 60vh;
+      width: 92vw;
+      height: 65vh;
       background: #282a36;
       border: 4px solid #ff758c;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
       border-radius: 4px;
       overflow: hidden;
+      margin-top: 5px;
     }
     .memory-item {
       position: absolute;
-      width: 95px;  /* Made bigger */
-      height: 95px; /* Made bigger */
+      width: 90px;
+      height: 90px;
       background: #ff758c;
       border: 3px solid #fff;
       display: flex;
@@ -115,7 +119,6 @@
       0% { transform: scale(0.2); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-    /* Popping animation when tapped */
     .pop-animation {
       animation: popOut 0.25s ease-out forwards;
     }
@@ -130,7 +133,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 15px;
+      gap: 12px;
       width: 90%;
       max-width: 400px;
     }
@@ -229,6 +232,72 @@
     let score = 0;
     const targetScore = 10;
     let lastPhotoIndex = -1;
+    let audioCtx = null;
+    let bgmInterval = null;
+
+    // 8-bit tap sound effect
+    function playPixelSound() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+      } catch (e) {}
+    }
+
+    // Cute background chiptune melody loop playing throughout the whole experience
+    function startBackgroundMusic() {
+      if (bgmInterval) return;
+      
+      const melody = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 587.33, 659.25]; // Soft uplifting loop
+      let noteIndex = 0;
+
+      bgmInterval = setInterval(() => {
+        try {
+          if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+
+          osc.type = 'triangle'; // Soft retro chime sound
+          osc.frequency.setValueAtTime(melody[noteIndex], audioCtx.currentTime);
+
+          gainNode.gain.setValueAtTime(0.025, audioCtx.currentTime); // Soft background volume
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.35);
+
+          noteIndex = (noteIndex + 1) % melody.length;
+        } catch (e) {}
+      }, 450); // Plays a sweet note every 450ms
+    }
 
     const photoArray = [
       'IMG_9897.jpeg',
@@ -239,6 +308,8 @@
     ];
 
     function startGame() {
+      playPixelSound();
+      startBackgroundMusic(); // Starts background music loop!
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('game-screen').style.display = 'flex';
       spawnMemory();
@@ -270,9 +341,8 @@
       const photoUrl = getNextPhoto();
       item.style.backgroundImage = `url('${photoUrl}')`;
 
-      // Account for larger 95px size within boundaries
-      const maxX = playArea.clientWidth - 100;
-      const maxY = playArea.clientHeight - 100;
+      const maxX = playArea.clientWidth - 95;
+      const maxY = playArea.clientHeight - 95;
       const randomX = Math.max(10, Math.floor(Math.random() * maxX));
       const randomY = Math.max(10, Math.floor(Math.random() * maxY));
       item.style.left = randomX + 'px';
@@ -293,10 +363,10 @@
 
     function catchMemory(e) {
       e.preventDefault();
+      playPixelSound();
       score++;
       document.getElementById('score').innerText = score;
       
-      // Add satisfying pop-out animation before removing
       this.classList.add('pop-animation');
       const currentItem = this;
       setTimeout(() => {
@@ -309,6 +379,7 @@
     }
 
     function openLetter() {
+      playPixelSound();
       document.getElementById('prize-screen').style.display = 'none';
       document.getElementById('letter-screen').style.display = 'flex';
     }
