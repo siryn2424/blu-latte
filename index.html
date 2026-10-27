@@ -205,7 +205,7 @@
       <div class="letter-text">
         I’m so damn proud of how far we’ve come. Honestly, at first it felt impossible, but your love didn't let us give up. That gave me the courage to just listen to what my heart’s always been shouting, which is you.<br><br>
         Thank you for holding on to me through every up and down from the very start. Thank you for making me smile even from the inside, and for showing me what real love actually feels like.<br><br>
-        Nothing can ever explain how much I love you, baby. I hope this little game I made for you showed you even just a bit of how much you mean to me.<br><br>
+        Nothing can ever explain how much I love you, baby. I hope this little game I made for you showed you even just a bit of how much you mean to mean.<br><br>
         <span style="color: #c9184a; font-weight: bold;">- forever yours, Siryn</span>
       </div>
       <button class="pixel-btn" style="margin: 15px auto 5px auto; font-size: 8px; padding: 10px;" onclick="location.reload()">PLAY AGAIN</button>
@@ -215,23 +215,33 @@
   <script>
     let score = 0;
     const targetScore = 10;
+    let lastPhotoIndex = -1;
 
-    // --- TYPE YOUR EXACT PHOTO FILENAMES HERE ---
-    // Make sure they match the filenames of the photos you just uploaded!
     const photoArray = [
       'IMG_9897.jpeg',
       'fxn_2025-12-25_190704.862.jpeg',
       'IMG_2380.jpeg',
       'IMG_7378.jpeg',
-      'dfuns 2025-12-26 193510.784.jpeg'
-      // If you added more photos, just add their filenames here like: 'IMG_9898.jpeg',
+      'dfuns_2025-12-26_193510.784.jpeg'
     ];
-    // --- STOP EDITING ---
 
     function startGame() {
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('game-screen').style.display = 'flex';
       spawnMemory();
+    }
+
+    function getNextPhoto() {
+      if (photoArray.length <= 1) return encodeURI(photoArray[0] || '');
+      
+      let newIndex;
+      // Guarantee the next photo is different from the last one shown
+      do {
+        newIndex = Math.floor(Math.random() * photoArray.length);
+      } while (newIndex === lastPhotoIndex);
+      
+      lastPhotoIndex = newIndex;
+      return encodeURI(photoArray[newIndex]);
     }
 
     function spawnMemory() {
@@ -245,8 +255,8 @@
       const item = document.createElement('div');
       item.classList.add('memory-item');
       
-      const selectedPhoto = photoArray[Math.floor(Math.random() * photoArray.length)];
-      item.style.backgroundImage = `url('${selectedPhoto}')`;
+      const photoUrl = getNextPhoto();
+      item.style.backgroundImage = `url('${photoUrl}')`;
 
       const maxX = playArea.clientWidth - 70;
       const maxY = playArea.clientHeight - 70;
